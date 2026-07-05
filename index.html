@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1035">
+<title>開運コンパス | 総合占いナビ</title>
+<meta name="description" content="数秘術・九星気学の吉方位・西洋占星術・マヤ暦・六星占術・神社属性をまとめて診断できる総合開運アプリ">
+<style>
+:root{
+  --bg1:#120b2e; --bg2:#2a1650; --bg3:#3d1d6b;
+  --card:rgba(255,255,255,.07); --card-border:rgba(255,255,255,.14);
+  --gold:#f0c75e; --gold-dim:#c9a94f;
+  --text:#f3eefc; --sub:#b9aed6;
+  --good:#7ee2a8; --bad:#ff8f8f; --neutral:#9d93bd;
+  --accent:#a78bfa;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",sans-serif;
+  background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%);
+  min-height:100vh;color:var(--text);line-height:1.7;
+  word-break:keep-all;overflow-wrap:anywhere;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px 90px}
+header{padding:26px 0 10px;text-align:center}
+h1{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:1.7rem;letter-spacing:.18em;color:var(--gold)}
+h1 .star{font-size:1rem;vertical-align:middle}
+.tagline{font-size:.78rem;color:var(--sub);letter-spacing:.12em;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:18px;padding:18px 18px;margin:14px 0;backdrop-filter:blur(6px)}
+.card h2{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:1.08rem;color:var(--gold);letter-spacing:.1em;margin-bottom:10px;border-bottom:1px solid var(--card-border);padding-bottom:8px}
+.card h3{font-size:.95rem;color:var(--accent);margin:14px 0 4px}
+label{display:block;font-size:.85rem;color:var(--sub);margin:12px 0 4px}
+select,input[type=text]{
+  width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-border);
+  background:rgba(0,0,0,.28);color:var(--text);font-size:1rem;appearance:auto;
+}
+.date-row{display:flex;gap:8px}
+.date-row select{flex:1}
+.btn{
+  display:block;width:100%;margin-top:20px;padding:15px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#f0c75e,#d99e2b);color:#2a1650;font-size:1.05rem;font-weight:700;
+  letter-spacing:.15em;cursor:pointer;box-shadow:0 4px 18px rgba(240,199,94,.35);
+}
+.btn:active{transform:scale(.98)}
+.btn-ghost{background:none;border:1px solid var(--card-border);color:var(--sub);box-shadow:none;font-weight:400;font-size:.85rem;padding:10px;letter-spacing:.1em}
+.tabbar{
+  display:flex;gap:6px;overflow-x:auto;padding:10px 2px;position:sticky;top:0;z-index:10;
+  background:linear-gradient(160deg,rgba(18,11,46,.96),rgba(42,22,80,.96));
+  margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none;
+}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;padding:8px 14px;border-radius:999px;border:1px solid var(--card-border);
+  background:transparent;color:var(--sub);font-size:.82rem;cursor:pointer;white-space:nowrap;letter-spacing:.05em;
+}
+.tab.active{background:var(--gold);color:#2a1650;font-weight:700;border-color:var(--gold)}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.72rem;border:1px solid var(--card-border);color:var(--sub);margin:2px 3px 2px 0}
+.big-result{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:1.55rem;color:var(--gold);letter-spacing:.08em;margin:6px 0}
+.kw{color:var(--accent);font-size:.85rem;letter-spacing:.08em}
+.desc{font-size:.9rem;color:var(--text);margin-top:6px}
+.note{font-size:.75rem;color:var(--sub);margin-top:10px;line-height:1.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{background:rgba(0,0,0,.22);border-radius:14px;padding:12px;border:1px solid var(--card-border)}
+.mini .t{font-size:.72rem;color:var(--sub);letter-spacing:.08em}
+.mini .v{font-size:1.02rem;color:var(--gold);font-weight:700;margin-top:2px;font-family:"Yu Mincho",serif}
+.mini .s{font-size:.74rem;color:var(--sub);margin-top:2px}
+.stars5{color:var(--gold);letter-spacing:2px}
+.dir-list{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}
+.dir-list td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
+.dir-list td:first-child{white-space:nowrap;font-weight:700;width:3.5em}
+.good{color:var(--good);font-weight:700}
+.bad{color:var(--bad);font-weight:700}
+.flat{color:var(--neutral)}
+.compass-box{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
+.compass-box figure{text-align:center}
+.compass-box figcaption{font-size:.78rem;color:var(--sub);margin-top:4px}
+.phase-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px}
+.phase-table td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.08)}
+.phase-now{background:rgba(240,199,94,.14);border-radius:8px}
+.disclaimer{font-size:.7rem;color:var(--sub);text-align:center;margin:26px 0 10px;line-height:1.7}
+footer{text-align:center;font-size:.72rem;color:var(--sub);padding-bottom:24px}
+.hidden{display:none!important}
+.profile-chip{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:14px;
+  padding:10px 14px;margin-top:12px;font-size:.85rem;
+}
+.profile-chip button{background:none;border:1px solid var(--card-border);border-radius:999px;color:var(--sub);padding:4px 12px;font-size:.75rem;cursor:pointer;white-space:nowrap}
+.section-lead{font-size:.85rem;color:var(--sub);margin-bottom:8px}
+.spot-tags{margin-top:6px}
+.spot-tags .badge{border-color:rgba(240,199,94,.4);color:var(--gold-dim)}
+.fortune-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:.88rem}
+#chat-log{display:flex;flex-direction:column;gap:8px;min-height:140px;max-height:52vh;overflow-y:auto;padding:6px 0}
+.msg{max-width:86%;padding:10px 13px;border-radius:16px;font-size:.87rem;line-height:1.65}
+.msg.bot{background:rgba(167,139,250,.14);border:1px solid rgba(167,139,250,.3);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:rgba(240,199,94,.15);border:1px solid rgba(240,199,94,.35);align-self:flex-end;border-bottom-right-radius:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--card-border);background:rgba(0,0,0,.25);color:var(--sub);font-size:.74rem;cursor:pointer}
+.chip:active{background:rgba(240,199,94,.2);color:var(--gold)}
+.chat-input{display:flex;gap:8px;margin-top:10px}
+.chat-input input{flex:1;padding:11px;border-radius:12px;border:1px solid var(--card-border);background:rgba(0,0,0,.28);color:var(--text);font-size:.95rem}
+.chat-input button{padding:0 18px;border:none;border-radius:12px;background:linear-gradient(135deg,#f0c75e,#d99e2b);color:#2a1650;font-weight:700;cursor:pointer}
+.q-block{margin:12px 0;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.q-block .q{font-size:.88rem;margin-bottom:8px}
+.q-opts{display:flex;gap:8px}
+.q-opt{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--card-border);background:rgba(0,0,0,.22);color:var(--sub);font-size:.78rem;cursor:pointer;text-align:center;line-height:1.5}
+.q-opt.sel{background:rgba(240,199,94,.2);border-color:var(--gold);color:var(--gold);font-weight:700}
+/* ===== 神秘演出 ===== */
+.wrap{position:relative;z-index:1}
+h1{text-shadow:0 0 22px rgba(240,199,94,.35)}
+.starfield,.starfield2{position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;z-index:0;background:transparent}
+.starfield{width:2px;height:2px;animation:twinkle 3.8s ease-in-out infinite alternate;
+ box-shadow:3vw 12vh #ffffffb0,9vw 28vh #ffffff70,14vw 6vh #f0c75e90,18vw 40vh #ffffff60,
+ 24vw 16vh #ffffffa0,29vw 33vh #ffffff50,33vw 8vh #a78bfa80,38vw 24vh #ffffff90,
+ 44vw 44vh #ffffff60,49vw 12vh #ffffffb0,55vw 30vh #f0c75e80,61vw 7vh #ffffff70,
+ 66vw 38vh #ffffff90,72vw 18vh #ffffff50,78vw 28vh #a78bfa70,83vw 9vh #ffffffa0,
+ 88vw 36vh #ffffff60,93vw 20vh #ffffff80,97vw 45vh #f0c75e70,7vw 55vh #ffffff80,
+ 16vw 68vh #ffffff50,27vw 78vh #ffffff70,37vw 60vh #ffffff40,47vw 72vh #ffffff80,
+ 58vw 64vh #a78bfa60,68vw 82vh #ffffff60,79vw 58vh #ffffff90,90vw 70vh #ffffff50,
+ 12vw 88vh #f0c75e60,32vw 92vh #ffffff70,52vw 86vh #ffffff50,72vw 94vh #ffffff80,88vw 88vh #ffffff60}
+.starfield2{width:3px;height:3px;animation:twinkle 5.6s ease-in-out infinite alternate-reverse;
+ box-shadow:11vw 18vh #ffffff50,26vw 48vh #f0c75e60,41vw 9vh #ffffff40,57vw 52vh #ffffff55,
+ 70vw 12vh #a78bfa50,85vw 48vh #ffffff45,20vw 84vh #ffffff40,45vw 66vh #f0c75e50,
+ 63vw 90vh #ffffff45,81vw 74vh #a78bfa45,95vw 30vh #ffffff50,5vw 38vh #ffffff45,
+ 36vw 34vh #ffffff35,92vw 60vh #f0c75e45}
+@keyframes twinkle{from{opacity:.3}to{opacity:.95}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card{animation:fadeUp .5s ease both}
+.ritual-overlay{position:fixed;inset:0;background:rgba(10,6,26,.93);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--sub);font-size:.95rem;letter-spacing:.12em;transition:opacity .45s}
+.ritual-overlay.fade{opacity:0}
+.ritual-star{font-size:2.4rem;color:var(--gold);animation:pulseStar 1.1s ease-in-out infinite;text-shadow:0 0 26px rgba(240,199,94,.6)}
+@keyframes pulseStar{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:1;transform:scale(1.2)}}
+/* ===== 相性診断 ===== */
+.aishou-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.ai-head{display:flex;justify-content:space-between;font-size:.9rem;font-weight:700}
+.ai-head .ai-score{color:var(--gold);font-family:"Yu Mincho",serif;font-size:1.05rem}
+.ai-bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin:6px 0 4px}
+.ai-bar div{height:100%;background:linear-gradient(90deg,#a78bfa,#f0c75e);border-radius:3px;transition:width 1s ease}
+.ai-title{font-size:.85rem;color:var(--accent);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="starfield"></div>
+<div class="starfield2"></div>
+<div class="wrap">
+<header>
+  <h1><span class="star">✦</span> 開運コンパス <span class="star">✦</span></h1>
+  <div class="tagline">七つの占術が導く、心の道しるべ</div>
+</header>
+
+<!-- ============ 入力画面 ============ -->
+<main id="screen-input">
+  <div class="card">
+    <h2>あなたのプロフィール</h2>
+    <p class="section-lead">生年月日から7種類の診断をまとめて行います。入力内容はこの端末にのみ保存されます。</p>
+    <label>お名前(任意・表示用)</label>
+    <input type="text" id="in-name" placeholder="例:山田 花子" maxlength="20">
+    <label>生年月日</label>
+    <div class="date-row">
+      <select id="in-year"></select>
+      <select id="in-month"></select>
+      <select id="in-day"></select>
+    </div>
+    <label>血液型(神社属性の診断に使用)</label>
+    <select id="in-blood">
+      <option value="">わからない・未選択</option>
+      <option value="A">A型</option>
+      <option value="B">B型</option>
+      <option value="O">O型</option>
+      <option value="AB">AB型</option>
+    </select>
+    <label>性格タイプ(すでにご存じの場合のみ)</label>
+    <select id="in-mbti">
+      <option value="">わからない(あとでアプリ内で診断できます)</option>
+      <option value="INTJ">INTJ(静かなる戦略家)</option>
+      <option value="INTP">INTP(好奇心の探究者)</option>
+      <option value="ENTJ">ENTJ(生まれながらの統率者)</option>
+      <option value="ENTP">ENTP(ひらめきの発明家)</option>
+      <option value="INFJ">INFJ(深き洞察の予見者)</option>
+      <option value="INFP">INFP(心優しき理想家)</option>
+      <option value="ENFJ">ENFJ(人を導く太陽)</option>
+      <option value="ENFP">ENFP(自由な情熱家)</option>
+      <option value="ISTJ">ISTJ(誠実な堅実家)</option>
+      <option value="ISFJ">ISFJ(献身的な守護者)</option>
+      <option value="ESTJ">ESTJ(頼れる実務家)</option>
+      <option value="ESFJ">ESFJ(温かな世話役)</option>
+      <option value="ISTP">ISTP(クールな職人)</option>
+      <option value="ISFP">ISFP(感性の芸術家)</option>
+      <option value="ESTP">ESTP(度胸の挑戦者)</option>
+      <option value="ESFP">ESFP(天性のムードメーカー)</option>
+    </select>
+    <button class="btn" onclick="saveProfile()">診断する ✦</button>
+  </div>
+  <p class="disclaimer">本アプリはエンターテインメントを目的とした占いコンテンツです。<br>重要な意思決定はご自身の判断で行ってください。</p>
+</main>
+
+<!-- ============ 結果画面 ============ -->
+<main id="screen-result" class="hidden">
+  <div class="profile-chip">
+    <span id="profile-summary"></span>
+    <button onclick="editProfile()">変更</button>
+  </div>
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-tab="sougou">✦ 総合</button>
+    <button class="tab" data-tab="suuhi">数秘術</button>
+    <button class="tab" data-tab="houi">吉方位</button>
+    <button class="tab" data-tab="seiza">星占い</button>
+    <button class="tab" data-tab="maya">マヤ暦</button>
+    <button class="tab" data-tab="rokusei">六星占術</button>
+    <button class="tab" data-tab="zokusei">神社属性</button>
+    <button class="tab" data-tab="mbti">性格タイプ</button>
+    <button class="tab" data-tab="aishou">💞 相性診断</button>
+    <button class="tab" data-tab="chat">🔮 相談室</button>
+  </nav>
+  <section id="tab-sougou" class="tabpane"></section>
+  <section id="tab-suuhi" class="tabpane hidden"></section>
+  <section id="tab-houi" class="tabpane hidden"></section>
+  <section id="tab-seiza" class="tabpane hidden"></section>
+  <section id="tab-maya" class="tabpane hidden"></section>
+  <section id="tab-rokusei" class="tabpane hidden"></section>
+  <section id="tab-zokusei" class="tabpane hidden"></section>
+  <section id="tab-mbti" class="tabpane hidden"></section>
+  <section id="tab-aishou" class="tabpane hidden">
+    <div class="card">
+      <h2>💞 相性診断 ─ 二人の縁を読む</h2>
+      <p class="section-lead">お相手の生年月日から、最大7つの占術で二人の縁を紐解きます。血液型・性格タイプも分かれば、さらに深く読めます。</p>
+      <label>お相手のお名前(任意)</label>
+      <input type="text" id="pt-name" placeholder="例:山田 太郎" maxlength="20">
+      <label>お相手の生年月日</label>
+      <div class="date-row">
+        <select id="pt-year"></select>
+        <select id="pt-month"></select>
+        <select id="pt-day"></select>
+      </div>
+      <div class="grid2">
+        <div><label>血液型(任意)</label><select id="pt-blood"></select></div>
+        <div><label>性格タイプ(任意)</label><select id="pt-mbti"></select></div>
+      </div>
+      <label>二人の関係</label>
+      <select id="pt-rel">
+        <option value="love">恋愛・夫婦</option>
+        <option value="friend">友人</option>
+        <option value="work">仕事のパートナー</option>
+        <option value="family">家族</option>
+      </select>
+      <button class="btn" onclick="runAishou()">二人の縁を読む ✦</button>
+    </div>
+    <div id="aishou-result"></div>
+  </section>
+  <section id="tab-chat" class="tabpane hidden">
+    <div class="card">
+      <h2>🔮 開運相談室</h2>
+      <p class="section-lead">星詠みコンシェルジュ「ルナ」が、あなたの診断結果をもとにお答えします。</p>
+      <div id="chat-log"></div>
+      <div class="chips" id="chat-chips"></div>
+      <div class="chat-input">
+        <input type="text" id="chat-text" placeholder="例:今月の吉方位は?" maxlength="100">
+        <button onclick="sendChat()">送信</button>
+      </div>
+      <p class="note">ルナの回答は、このアプリ内の占い結果に基づく自動応答です(通信は行いません)。</p>
+    </div>
+  </section>
+  <p class="disclaimer">本アプリの占い結果はエンターテインメントを目的としたものであり、効果・的中を保証するものではありません。<br>吉方位の節入り日は略算(実際と±1日ずれる場合があります)。六星占術・マヤ暦は一般公開されている計算法に基づく簡易版です。</p>
+</main>
+
+<footer>© 2026 開運コンパス</footer>
+</div>
+
+<script src="uranai-data.js"></script>
+<script src="uranai-main.js"></script>
+</body>
+</html>
