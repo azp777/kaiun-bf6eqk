@@ -296,12 +296,15 @@ function calcDaily(p){
   const key=`${t.getFullYear()}${t.getMonth()+1}${t.getDate()}|${p.y}-${p.m}-${p.d}`;
   const rnd=mulberry32(hashStr(key));
   const r5=()=>Math.floor(rnd()*5)+1;
+  const cP=(typeof LUNA_EXT!=='undefined'&&LUNA_EXT.colors)?LUNA_EXT.colors:LUCKY_COLORS;
+  const iP=(typeof LUNA_EXT!=='undefined'&&LUNA_EXT.items)?LUNA_EXT.items:LUCKY_ITEMS;
+  const aP=(typeof LUNA_EXT!=='undefined'&&LUNA_EXT.advice)?LUNA_EXT.advice:DAILY_ADVICE;
   return {
     total:Math.max(2,r5()),love:r5(),work:r5(),money:r5(),health:r5(),
-    color:LUCKY_COLORS[Math.floor(rnd()*LUCKY_COLORS.length)],
-    item:LUCKY_ITEMS[Math.floor(rnd()*LUCKY_ITEMS.length)],
+    color:cP[Math.floor(rnd()*cP.length)],
+    item:iP[Math.floor(rnd()*iP.length)],
     num:Math.floor(rnd()*9)+1,
-    advice:DAILY_ADVICE[Math.floor(rnd()*DAILY_ADVICE.length)]
+    advice:aP[Math.floor(rnd()*aP.length)]
   };
 }
 
@@ -419,8 +422,9 @@ function chatAdd(text,who){
 function chatWelcome(){
   if(chatStarted||!CURRENT)return;
   chatStarted=true;
-  const name=CURRENT.p.name?CURRENT.p.name+'さん':'あなた';
-  chatAdd(`こんにちは、${name}✦ 星詠みコンシェルジュのルナです。\n運勢のこと、吉方位や旅行先のこと、なんでも聞いてくださいね。下のボタンからも質問できます。`,'bot');
+  const c=CURRENT,name=c.p.name?c.p.name+'さん':'あなた';
+  const gl=(typeof lunaGreetLine==='function')?lunaGreetLine(c):'';
+  chatAdd(`こんにちは、${name}✦ 星詠みコンシェルジュのルナです。\n${gl?gl+'\n':''}運勢のこと、吉方位や旅行先のこと、なんでも聞いてくださいね。下のボタンからも質問できます。`,'bot');
 }
 function chipSend(t){$('chat-text').value=t;sendChat();}
 function sendChat(){
@@ -432,8 +436,10 @@ function botReply(q){
   const c=CURRENT;if(!c)return 'まずはプロフィールを登録してくださいね。';
   const p=c.p,d=c.daily;
   const name=p.name?p.name+'さん':'あなた';
-  if(/おはよう|こんにちは|こんばんは|はじめまして|やっほ|ハロー|hello/i.test(q))
-    return `${name}、ようこそ開運相談室へ✦ 今日の総合運は${starBar(d.total)}。「今日の運勢は?」「吉方位は?」など、気軽に聞いてくださいね。`;
+  if(/おはよう|こんにちは|こんばんは|はじめまして|やっほ|ハロー|hello/i.test(q)){
+    const gl=(typeof lunaGreetLine==='function')?lunaGreetLine(c):'';
+    return `${name}、ようこそ開運相談室へ✦ 今日の総合運は${starBar(d.total)}。${gl?gl+' ':''}「今日の運勢は?」「吉方位は?」など、気軽に聞いてくださいね。`;
+  }
   if(/ありがとう|感謝|助かっ/.test(q))
     return `どういたしまして✦ ${name}の毎日に良い風が吹きますように。またいつでも呼んでくださいね。`;
   if(/大殺界|殺界/.test(q)){
@@ -466,17 +472,26 @@ function botReply(q){
     return `本命星${KYUSEI[c.houi.my-1]}の${name}の${c.houi.effY}年の吉方位は「${yg.join('・')||'なし'}」、今月の吉方位は「${mg.join('・')||'なし'}」。${both.length?`特に${both.join('・')}はダブル吉です✦`:'ダブル吉は来月以降に期待しましょう。'}\n引っ越しなど長期の移動は、年盤・月盤の両方が吉の方位が理想。詳しくは「吉方位」タブのコンパスをどうぞ。`;
   }
   if(/恋愛|恋|結婚|出会い|片思い|パートナー/.test(q)){
-    return `今日の${name}の恋愛・対人運は${starBar(d.love)}。\n${d.love>=4?'グングン来てます!気になる人には今日のうちに連絡を✦':d.love>=3?'穏やかな追い風。焦らず自然体でいるのが、いちばん魅力的に見える日です。':'今日は攻めるより自分磨きの日。'+d.color+'を身につけると恋愛運が底上げされますよ。'}\n${c.z.name}のあなたは「${c.z.kw}」が魅力の武器。それをわかってくれる相手こそご縁の人です。`;
+    let s=`今日の${name}の恋愛・対人運は${starBar(d.love)}。\n${d.love>=4?'グングン来てます!気になる人には今日のうちに連絡を✦':d.love>=3?'穏やかな追い風。焦らず自然体でいるのが、いちばん魅力的に見える日です。':'今日は攻めるより自分磨きの日。'+d.color+'を身につけると恋愛運が底上げされますよ。'}\n${c.z.name}のあなたは「${c.z.kw}」が魅力の武器。それをわかってくれる相手こそご縁の人です。`;
+    if(typeof lunaLove==='function'){const x=lunaLove(c);if(x)s+='\n'+x;}
+    return s;
   }
   if(/仕事|転職|勉強|試験|資格|昇進|キャリア/.test(q)){
-    return `今日の仕事・学び運は${starBar(d.work)}。\n数秘術では${c.num.pyYear}年のあなたはパーソナルイヤー「${c.num.py}」。${PERSONAL_YEAR[c.num.py]}\n${PHASES[c.roku.phaseIdx][2]===0?'六星占術では大殺界中なので、転職などの大きな決断は情報収集をいつもより丁寧に。実力を磨く時期と割り切ると最強です。':'六星占術の今年の運気は「'+PHASES[c.roku.phaseIdx][0]+'」。'+PHASES[c.roku.phaseIdx][1]+'。'}`;
+    let s=`今日の仕事・学び運は${starBar(d.work)}。\n数秘術では${c.num.pyYear}年のあなたはパーソナルイヤー「${c.num.py}」。${PERSONAL_YEAR[c.num.py]}\n${PHASES[c.roku.phaseIdx][2]===0?'六星占術では大殺界中なので、転職などの大きな決断は情報収集をいつもより丁寧に。実力を磨く時期と割り切ると最強です。':'六星占術の今年の運気は「'+PHASES[c.roku.phaseIdx][0]+'」。'+PHASES[c.roku.phaseIdx][1]+'。'}`;
+    if(typeof lunaWork==='function'){const x=lunaWork(c);if(x)s+='\n'+KYUSEI[c.houi.my-1]+'のあなたは、'+x;}
+    return s;
   }
   if(/金運|お金|宝くじ|貯金|投資|臨時収入/.test(q)){
     const idx=c.roku.phaseIdx,zaiY=c.roku.nowYear+((7-idx)+12)%12;
-    return `今日の金運は${starBar(d.money)}。ラッキーナンバーは「${d.num}」です✦\n六星占術では${zaiY===c.roku.nowYear?'なんと今年が金運の「財成」イヤー!実利を固める行動が吉です。':zaiY+'年が金運の「財成」イヤー。'}\nお財布の整理と玄関の掃除は、どの占術でも共通する金運アップの基本ですよ。`;
+    let s=`今日の金運は${starBar(d.money)}。ラッキーナンバーは「${d.num}」です✦\n六星占術では${zaiY===c.roku.nowYear?'なんと今年が金運の「財成」イヤー!実利を固める行動が吉です。':zaiY+'年が金運の「財成」イヤー。'}\nお財布の整理と玄関の掃除は、どの占術でも共通する金運アップの基本ですよ。`;
+    if(typeof lunaMoney==='function'){const x=lunaMoney(c);if(x)s+='\nライフパス'+c.num.lp+'の'+name+'は、'+x;}
+    return s;
   }
   if(/健康|体調|疲れ|睡眠/.test(q)){
-    return `今日の健康運は${starBar(d.health)}。\n${d.health<=2?'今日は無理は禁物。睡眠を最優先して、温かいものを食べてくださいね。':'調子は悪くありません。良い習慣をひとつ足すのに向いた日です。'}${PHASES[c.roku.phaseIdx][0]==='健弱'?'\n六星占術では今年は「健弱」の年。健康診断と休息をいつもより大切に。':''}\n今日の開運アクションは「${d.item}」です✦`;
+    let s=`今日の健康運は${starBar(d.health)}。\n${d.health<=2?'今日は無理は禁物。睡眠を最優先して、温かいものを食べてくださいね。':'調子は悪くありません。良い習慣をひとつ足すのに向いた日です。'}${PHASES[c.roku.phaseIdx][0]==='健弱'?'\n六星占術では今年は「健弱」の年。健康診断と休息をいつもより大切に。':''}`;
+    if(typeof lunaHealth==='function'){const x=lunaHealth(c);if(x)s+='\n'+c.zoku.attr+'属性のあなたには、'+x;}
+    s+=`\n今日の開運アクションは「${d.item}」です✦`;
+    return s;
   }
   if(/パワースポット|神社|属性|参拝|お参り|お寺/.test(q)){
     if(c.zoku.unknown)return `神社属性(繭気属性)を占うには血液型が必要です。上の「変更」ボタンから設定してくださいね。ちなみに生年月日だけで出せる基本数は「${c.zoku.base}」です。`;
@@ -507,7 +522,9 @@ function botReply(q){
    '水のカードが出ました。感情は溜め込まず、信頼できる人に話してみて。',
    '星回りは穏やかです。日常の「ちょっと嬉しい」を数えると運気が育ちます。'
   ];
-  const r=mulberry32(hashStr(q+String(new Date().getDate())))();
+  if(typeof lunaOracle==='function'){const lo=lunaOracle(c,q);if(lo)return lo;}
+  const t=new Date();
+  const r=mulberry32(hashStr(q+'|'+t.getFullYear()+'-'+(t.getMonth()+1)+'-'+t.getDate()+'|'+p.y+'-'+p.m+'-'+p.d))();
   return `${oracle[Math.floor(r*oracle.length)]}\n(参考までに、今日のラッキーカラーは${d.color}です✦)`;
 }
 
