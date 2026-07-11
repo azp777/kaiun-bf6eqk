@@ -44,14 +44,14 @@ function renderAll(p){
    <div class="card">
     <h2>✦ ${name}の運命プロフィール</h2>
     <div class="grid2">
-      <div class="mini"><div class="t">数秘術 ライフパス</div><div class="v">${num.lp}</div><div class="s">${esc(LIFEPATH[num.lp].kw)}</div></div>
-      <div class="mini"><div class="t">太陽星座</div><div class="v">${z.name}</div><div class="s">${esc(z.kw)}</div></div>
-      <div class="mini"><div class="t">九星気学 本命星</div><div class="v">${KYUSEI[houi.my-1]}</div><div class="s">吉方位の基準になる星</div></div>
-      <div class="mini"><div class="t">マヤ暦</div><div class="v">${maya.special?'特別な日':'KIN '+maya.kin}</div><div class="s">${maya.special?'2/29生まれ':esc(SEALS[maya.seal].n)}</div></div>
-      <div class="mini"><div class="t">六星占術</div><div class="v">${roku.star}${roku.sign.slice(0,1)}</div><div class="s">${roku.nowYear}年は「${phase[0]}」</div></div>
-      <div class="mini"><div class="t">神社属性</div><div class="v">${zoku.unknown?'血液型未設定':zoku.attr+'属性'}</div><div class="s">${zoku.unknown?'プロフィールで設定できます':esc(ZOKUSEI_INFO[zoku.attr].kw)}</div></div>
-      <div class="mini"><div class="t">性格タイプ</div><div class="v">${p.mbti&&MBTI_TYPES[p.mbti]?p.mbti:'未診断'}</div><div class="s">${p.mbti&&MBTI_TYPES[p.mbti]?esc(MBTI_TYPES[p.mbti].label):'「性格タイプ」タブで診断できます'}</div></div>
-      <div class="mini"><div class="t">${num.pyYear}年のテーマ</div><div class="v">パーソナルイヤー${num.py}</div><div class="s">${esc(PERSONAL_YEAR[num.py].split('。')[0])}</div></div>
+      <div class="mini" data-jump="suuhi"><div class="t">数秘術 ライフパス</div><div class="v">${num.lp}</div><div class="s">${esc(LIFEPATH[num.lp].kw)}</div></div>
+      <div class="mini" data-jump="seiza"><div class="t">太陽星座</div><div class="v">${z.name}</div><div class="s">${esc(z.kw)}</div></div>
+      <div class="mini" data-jump="houi"><div class="t">九星気学 本命星</div><div class="v">${KYUSEI[houi.my-1]}</div><div class="s">吉方位の基準になる星</div></div>
+      <div class="mini" data-jump="maya"><div class="t">マヤ暦</div><div class="v">${maya.special?'特別な日':'KIN '+maya.kin}</div><div class="s">${maya.special?'2/29生まれ':esc(SEALS[maya.seal].n)}</div></div>
+      <div class="mini" data-jump="rokusei"><div class="t">六星占術</div><div class="v">${roku.star}${roku.sign.slice(0,1)}</div><div class="s">${roku.nowYear}年は「${phase[0]}」</div></div>
+      <div class="mini" data-jump="zokusei"><div class="t">神社属性</div><div class="v">${zoku.unknown?'血液型未設定':zoku.attr+'属性'}</div><div class="s">${zoku.unknown?'プロフィールで設定できます':esc(ZOKUSEI_INFO[zoku.attr].kw)}</div></div>
+      <div class="mini" data-jump="mbti"><div class="t">性格タイプ</div><div class="v">${p.mbti&&MBTI_TYPES[p.mbti]?p.mbti:'未診断'}</div><div class="s">${p.mbti&&MBTI_TYPES[p.mbti]?esc(MBTI_TYPES[p.mbti].label):'「性格タイプ」タブで診断できます'}</div></div>
+      <div class="mini" data-jump="suuhi"><div class="t">${num.pyYear}年のテーマ</div><div class="v">パーソナルイヤー${num.py}</div><div class="s">${esc(PERSONAL_YEAR[num.py].split('。')[0])}</div></div>
     </div>
    </div>
    <div class="card">
@@ -68,6 +68,7 @@ function renderAll(p){
       <span class="badge">ラッキーナンバー:${daily.num}</span>
       <span class="badge">開運アクション:${esc(daily.item)}</span>
     </div>
+    ${omamoriHTML(p)}
    </div>
    <div class="card">
     <h2>🧭 今月のパワーチャージ方位</h2>
@@ -272,6 +273,7 @@ function showResult(p){
   $('screen-input').classList.add('hidden');
   $('screen-result').classList.remove('hidden');
   renderAll(p);
+  applyTabPrefs();
   window.scrollTo(0,0);
 }
 document.getElementById('tabbar').addEventListener('click',e=>{
@@ -289,7 +291,8 @@ const REL_ADVICE={
  love:['恋愛・夫婦','恋の縁は、点数では決まりません。違いを「直したいもの」ではなく「愛でたいもの」として眺められた時、二人の物語は深まっていきます。'],
  friend:['友情','友の縁は、会う頻度より心の濃度。会わない時間も含めて育つのが、本物の友情です。'],
  work:['仕事','仕事の縁は、違いこそが戦力。占いが示した凸凹を役割分担に変えられれば、二人の成果は一人の何倍にもなります。'],
- family:['家族','家族の縁は、選べないからこそ尊いもの。近い関係だからこそ、一歩ぶんの敬意と「ありがとう」を。']
+ family:['家族','家族の縁は、選べないからこそ尊いもの。近い関係だからこそ、一歩ぶんの敬意と「ありがとう」を。'],
+ nigate:['苦手な相手','無理に好きになる必要はありません。大切なのは、あなたが消耗しない距離感と境界線。合わない部分は「そういう人」と知っておくだけで、心はずっと楽になります。']
 };
 function ritualOverlay(msg,ms,cb){
   const ov=document.createElement('div');
@@ -378,7 +381,8 @@ function renderAishou(me,pt){
     <h3>この縁の活かし方</h3>
     <p class="desc">二人のいちばんの強みは、「${max.sys}」が示す${esc(max.title)}。いっぽう「${min.sys}」のテーマは、二人の伸びしろです。${esc(rel[1])}</p>
     <p class="note">相性は「決まった答え」ではなく「二人の取扱説明書」。低い数字は悪い印ではなく、伸びしろの在り処です。</p>
-   </div>`;
+   </div>
+   ${buildCaptureGuide(me,pt,pt.rel)}`;
 }
 
 initSelects();
