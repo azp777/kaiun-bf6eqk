@@ -6,6 +6,12 @@
 <meta name="theme-color" content="#1a1035">
 <title>開運コンパス | 総合占いナビ</title>
 <meta name="description" content="数秘術・九星気学の吉方位・西洋占星術・マヤ暦・運命星めぐり・神社属性をまとめて診断できる総合開運アプリ">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="開運コンパス">
 <style>
 :root{
   --bg1:#120b2e; --bg2:#2a1650; --bg3:#3d1d6b;
@@ -151,6 +157,15 @@ h1{text-shadow:0 0 22px rgba(240,199,94,.35)}
 .tgl.lock{opacity:.45;cursor:default}
 .mini[data-jump]{cursor:pointer}
 .mini[data-jump]:active{background:rgba(240,199,94,.12)}
+/* ===== PWA インストール導線／通知 ===== */
+.pwa-install-btn{display:block;margin:4px auto 12px;padding:8px 16px;border-radius:999px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(240,199,94,.18),rgba(217,158,43,.14));color:var(--gold);font-size:.82rem;letter-spacing:.06em;cursor:pointer;font-family:inherit}
+.pwa-install-btn:active{transform:scale(.97)}
+.pwa-ios-hint{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;margin:4px 0 12px;padding:10px 12px;border:1px solid var(--card-border);border-radius:12px;background:rgba(0,0,0,.24);color:var(--sub);font-size:.78rem;line-height:1.6}
+.pwa-ios-hint-x{flex:0 0 auto;background:none;border:none;color:var(--sub);font-size:1.1rem;line-height:1;cursor:pointer;padding:0 2px}
+.pwa-notify-card{margin-top:14px}
+.pwa-notify-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pwa-notify-head .t{font-size:.9rem;color:var(--gold);letter-spacing:.04em;font-family:"Yu Mincho","Hiragino Mincho ProN",serif}
+.pwa-notify-msg{font-size:.75rem;color:var(--sub);margin-top:8px;line-height:1.6;min-height:0}
 </style>
 </head>
 <body>
@@ -278,6 +293,13 @@ h1{text-shadow:0 0 22px rgba(240,199,94,.35)}
       <p style="text-align:right;margin-top:8px"><button class="chip" onclick="lunaClearHistory()">履歴を消す</button></p>
       <p class="note">ルナの回答は、このアプリ内の占い結果に基づく自動応答です(通信は行いません)。</p>
     </div>
+    <div class="card pwa-notify-card">
+      <div class="pwa-notify-head">
+        <span class="t">🔔 毎朝の運勢通知(ベータ・対応端末のみ)</span>
+        <button id="pwa-notify-toggle" class="tgl" type="button" aria-pressed="false" aria-label="毎朝の運勢通知"></button>
+      </div>
+      <p class="pwa-notify-msg" id="pwa-notify-msg">オンにすると、対応端末では毎朝おおよそ1回、その日の運勢のお知らせを表示します。通知の配信タイミングや対応可否はご利用の端末・ブラウザによります。</p>
+    </div>
   </section>
   <p class="disclaimer">本アプリの占い結果はエンターテインメントを目的としたものであり、効果・的中を保証するものではありません。<br>吉方位の節入り日は略算(実際と±1日ずれる場合があります)。運命星めぐり・冬運期などの運気こよみは日干支に基づく当アプリ独自の名称・簡易計算です。マヤ暦は現代マヤ暦として広く用いられる計算法に基づきます。本アプリは特定の占術家・流派・団体とは関係ありません。</p>
 </main>
@@ -289,5 +311,6 @@ h1{text-shadow:0 0 22px rgba(240,199,94,.35)}
 <script src="uranai-plus.js?v=tm1"></script>
 <script src="uranai-luna.js?v=tm1"></script>
 <script src="uranai-main.js?v=tm1"></script>
+<script src="uranai-pwa.js?v=tm1"></script>
 </body>
 </html>
