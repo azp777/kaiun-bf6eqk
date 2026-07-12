@@ -48,7 +48,7 @@ function renderAll(p){
       <div class="mini" data-jump="seiza"><div class="t">太陽星座</div><div class="v">${z.name}</div><div class="s">${esc(z.kw)}</div></div>
       <div class="mini" data-jump="houi"><div class="t">九星気学 本命星</div><div class="v">${KYUSEI[houi.my-1]}</div><div class="s">吉方位の基準になる星</div></div>
       <div class="mini" data-jump="maya"><div class="t">マヤ暦</div><div class="v">${maya.special?'特別な日':'KIN '+maya.kin}</div><div class="s">${maya.special?'2/29生まれ':esc(SEALS[maya.seal].n)}</div></div>
-      <div class="mini" data-jump="rokusei"><div class="t">六星占術</div><div class="v">${roku.star}${roku.sign.slice(0,1)}</div><div class="s">${roku.nowYear}年は「${phase[0]}」</div></div>
+      <div class="mini" data-jump="rokusei"><div class="t">運命星</div><div class="v">${roku.star}タイプ${roku.sign.slice(0,1)}</div><div class="s">${roku.nowYear}年は「${phase[0]}」</div></div>
       <div class="mini" data-jump="zokusei"><div class="t">神社属性</div><div class="v">${zoku.unknown?'血液型未設定':zoku.attr+'属性'}</div><div class="s">${zoku.unknown?'プロフィールで設定できます':esc(ZOKUSEI_INFO[zoku.attr].kw)}</div></div>
       <div class="mini" data-jump="mbti"><div class="t">性格タイプ</div><div class="v">${p.mbti&&MBTI_TYPES[p.mbti]?p.mbti:'未診断'}</div><div class="s">${p.mbti&&MBTI_TYPES[p.mbti]?esc(MBTI_TYPES[p.mbti].label):'「性格タイプ」タブで診断できます'}</div></div>
       <div class="mini" data-jump="suuhi"><div class="t">${num.pyYear}年のテーマ</div><div class="v">パーソナルイヤー${num.py}</div><div class="s">${esc(PERSONAL_YEAR[num.py].split('。')[0])}</div></div>
@@ -157,7 +157,7 @@ function renderAll(p){
   if(maya.special){
     $('tab-maya').innerHTML=`<div class="card"><h2>マヤ暦(ツォルキン)</h2>
       <div class="big-result">フナブ・クの日</div>
-      <p class="desc">2月29日生まれのあなたは、ドリームスペルでは「時間をはずした特別な日」に相当し、KINを持たない稀有な存在とされます。260のエネルギーすべてと自由につながれる、枠を超えた魂の持ち主です。</p></div>`;
+      <p class="desc">2月29日生まれのあなたは、現代マヤ暦では「時間をはずした特別な日」に相当し、KINを持たない稀有な存在とされます。260のエネルギーすべてと自由につながれる、枠を超えた魂の持ち主です。</p></div>`;
   }else{
     const s=SEALS[maya.seal], ws=SEALS[maya.wsSeal], op=SEALS[maya.oppSeal];
     $('tab-maya').innerHTML=`
@@ -177,11 +177,11 @@ function renderAll(p){
       <p class="desc">潜在意識のテーマは「${esc(ws.kw)}」。${esc(ws.d)}</p>
       <h3>反対KIN「${esc(op.n)}」(KIN${maya.opp})</h3>
       <p class="desc">あなたに無い視点を教えてくれる学びの相手。「${esc(op.kw)}」のエネルギーを持つ人から気づきをもらえます。</p>
-      <p class="note">本アプリのKINはドリームスペル(アグエイアス版)の計算法に準拠しています。</p>
+      <p class="note">本アプリのKINは、現代マヤ暦として広く用いられるツォルキンの計算法に基づいています。</p>
      </div>`;
   }
 
-  /* --- 六星占術 --- */
+  /* --- 運命星めぐり --- */
   const phaseRows=PHASES.map((ph,i)=>{
     const y=roku.nowYear+((i-roku.phaseIdx)+12)%12;
     const mark=['<span class="bad">✕</span>','<span class="flat">△</span>','<span class="flat">○</span>','<span class="good">◎</span>'][ph[2]];
@@ -189,17 +189,18 @@ function renderAll(p){
   }).join('');
   $('tab-rokusei').innerHTML=`
    <div class="card">
-    <h2>六星占術 ─ あなたの運命星</h2>
-    <div class="big-result">${roku.star} ${roku.sign}</div>
+    <h2>運命星めぐり ─ あなたの運命星</h2>
+    <div class="big-result">${roku.star}タイプ ${roku.sign}</div>
     <p class="desc">${esc(ROKUSEI_DESC[roku.star])}</p>
     <p class="note">星数:${roku.n}(生年月日の干支から算出した簡易計算です)</p>
+    <p class="note">※運命星めぐりは当アプリ独自の運気こよみです(特定の占術団体・流派とは関係ありません)。</p>
    </div>
    <div class="card">
     <h2>${roku.nowYear}年(${ETO[roku.nb]}年)の運気:「${PHASES[roku.phaseIdx][0]}」</h2>
-    <p class="desc">${esc(PHASES[roku.phaseIdx][1])}。${PHASES[roku.phaseIdx][2]===0?'大殺界の期間は新規スタートより「守り・整理・学び」に力を注ぐと、明けてから大きく飛躍できます。':PHASES[roku.phaseIdx][2]===3?'運気の追い風が吹いています。チャレンジするなら今です。':'足元を固めながら、次の好機に備えましょう。'}</p>
+    <p class="desc">${esc(PHASES[roku.phaseIdx][1])}。${PHASES[roku.phaseIdx][2]===0?'冬運期の期間は新規スタートより「守り・整理・学び」に力を注ぐと、明けてから大きく飛躍できます。':PHASES[roku.phaseIdx][2]===3?'運気の追い風が吹いています。チャレンジするなら今です。':'足元を固めながら、次の好機に備えましょう。'}</p>
     <h3>これから12年の運気カレンダー</h3>
     <table class="phase-table">${phaseRows}</table>
-    <p class="note">「陰影・停止・減退」の3年間が大殺界、「乱気」は小殺界とされます。運気表は年単位の簡易版です(本来は月運も加味します)。</p>
+    <p class="note">「冬入り・冬ごもり・夜明け前」の3年間が冬運期、「ゆらぎ」はゆらぎ期とされます。運気表は年単位の簡易版です(本来は月運も加味します)。</p>
    </div>`;
 
   /* --- 神社属性 --- */
@@ -210,7 +211,8 @@ function renderAll(p){
     }).join('');
     $('tab-zokusei').innerHTML=`
      <div class="card">
-      <h2>神社属性(繭気属性)診断</h2>
+      <h2>神社属性 診断</h2>
+      <p class="note">※「神社属性」は当アプリ独自の呼称です。</p>
       <p class="desc">生年月日の数字を合計した基本数はあなたの場合「<b>${zoku.base}</b>」。ここに血液型の数(A=1/B=2/AB=3/O=4)を足して属性を出します。血液型を設定すると確定します。</p>
       <table class="dir-list">${cand}</table>
       <button class="btn btn-ghost" onclick="editProfile()">血液型を設定する</button>
@@ -219,7 +221,8 @@ function renderAll(p){
     const zi=ZOKUSEI_INFO[zoku.attr];
     $('tab-zokusei').innerHTML=`
      <div class="card">
-      <h2>神社属性(繭気属性)診断</h2>
+      <h2>神社属性 診断</h2>
+      <p class="note">※「神社属性」は当アプリ独自の呼称です。</p>
       <div class="big-result">${zoku.attr}属性</div>
       <div class="kw">${esc(zi.kw)}</div>
       <p class="desc">${esc(zi.d)}</p>

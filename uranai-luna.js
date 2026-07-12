@@ -13,7 +13,7 @@ const LUNA_CTX={lastTopic:null,counts:{},deep:0};
 function lunaTopicOf(q){
   if(/おはよう|こんにちは|こんばんは|はじめまして|やっほ|ハロー|hello/i.test(q))return null;
   if(/ありがとう|感謝|助かっ/.test(q))return null;
-  if(/大殺界|殺界/.test(q))return 'daisakkai';
+  if(/大殺界|殺界|冬運|運気の冬/.test(q))return 'daisakkai';
   if(/相性/.test(q))return 'aishou';
   if(/旅行|旅先|お出かけ|おでかけ|温泉|どこ.*行/.test(q))return 'travel';
   if(/方位|方角|引っ越し|引越/.test(q))return 'houi';
@@ -83,7 +83,7 @@ const LUNA_DEEP={
  money:function(c){
   const idx=c.roku.phaseIdx,now=c.roku.nowYear,zaiY=now+((7-idx)+12)%12,rest=zaiY-now;
   let s='金運のお話、さらに深くお伝えしますね✦';
-  s+='\n◆ 財成イヤー:'+(rest===0?'なんと今年('+now+'年)がまさに「財成」。実利を固める絶好期です。':zaiY+'年('+(rest===1?'来年':'あと'+rest+'年')+')が金運上昇の「財成」イヤー。それまでは土台づくりが吉です。');
+  s+='\n◆ 豊穣イヤー:'+(rest===0?'なんと今年('+now+'年)がまさに「豊穣」。実利を固める絶好期です。':zaiY+'年('+(rest===1?'来年':'あと'+rest+'年')+')が金運上昇の「豊穣」イヤー。それまでは土台づくりが吉です。');
   if(typeof LUNA_EXT!=='undefined'&&LUNA_EXT.moneyByLp&&LUNA_EXT.moneyByLp[c.num.lp])
     s+='\n◆ ライフパス'+c.num.lp+'の貯め方:'+LUNA_EXT.moneyByLp[c.num.lp];
   s+='\n◆ 今日の金運アクション:'+lunaSeedPick(LUNA_ACTS.money,'deep-money',c.p);
@@ -94,7 +94,7 @@ const LUNA_DEEP={
   let s='お体のこと、大切に思っているんですね✦ もう少し深く読んでみます。';
   if(!c.zoku.unknown&&typeof LUNA_EXT!=='undefined'&&LUNA_EXT.healthByAttr&&LUNA_EXT.healthByAttr[c.zoku.attr])
     s+='\n◆ '+c.zoku.attr+'属性のリフレッシュ法:'+LUNA_EXT.healthByAttr[c.zoku.attr];
-  s+='\n◆ 六星の「健弱」:'+(kenY===now?'今年('+now+'年)がちょうど「健弱」の年。健康診断と休息をいつもより丁寧に。':'次の「健弱」は'+kenY+'年。その年は予定を詰め込みすぎないよう、心に留めておいてくださいね。');
+  s+='\n◆ 運命星めぐりの「小休み」:'+(kenY===now?'今年('+now+'年)がちょうど「小休み」の年。健康診断と休息をいつもより丁寧に。':'次の「小休み」は'+kenY+'年。その年は予定を詰め込みすぎないよう、心に留めておいてくださいね。');
   if(typeof pickOmamori==='function'){const o=pickOmamori(c.p);s+='\n◆ こころのお守り:'+o.n+' ─ '+o.s;}
   return s;
  },
@@ -110,9 +110,9 @@ const LUNA_DEEP={
  daisakkai:function(c){
   const idx=c.roku.phaseIdx,now=c.roku.nowYear,to=k=>now+((k-idx)+12)%12;
   const rikka=to(2),tassei=to(4);
-  let s='大殺界のこと、もう少し深くお話ししますね✦';
-  s+='\n◆ 12年の流れ:今年の'+c.roku.star+'は「'+PHASES[idx][0]+'」。絶好調期は、立花が'+(rikka===now?'今年('+now+'年)':rikka+'年')+'、達成が'+(tassei===now?'今年('+now+'年)':tassei+'年')+'。ここに向けて計画を立てるのが六星の知恵です。';
-  s+='\n◆ 大殺界の過ごし方三箇条:一、新しい大勝負(転職・起業・大きな買い物)は控えめに。二、学び・整理・体調管理など「守りの充実」に徹する。三、焦らないこと。明けた年の追い風が、その分大きくなります。';
+  let s='運気の冬のこと、もう少し深くお話ししますね✦';
+  s+='\n◆ 12年の流れ:今年の'+c.roku.star+'タイプは「'+PHASES[idx][0]+'」。絶好調期は、開花が'+(rikka===now?'今年('+now+'年)':rikka+'年')+'、実りが'+(tassei===now?'今年('+now+'年)':tassei+'年')+'。ここに向けて計画を立てるのが運命星めぐりの知恵です。';
+  s+='\n◆ 冬運期の過ごし方三箇条:一、新しい大勝負(転職・起業・大きな買い物)は控えめに。二、学び・整理・体調管理など「守りの充実」に徹する。三、焦らないこと。明けた年の追い風が、その分大きくなります。';
   return s;
  },
  daily:function(c){

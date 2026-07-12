@@ -10,7 +10,7 @@
 const TABS_KEY='kaiun-compass-tabs';
 const TAB_DEFS=[
  ['suuhi','数秘術'],['houi','吉方位'],['seiza','星占い'],['maya','マヤ暦'],
- ['rokusei','六星占術'],['zokusei','神社属性'],['mbti','性格タイプ'],
+ ['rokusei','運命星'],['zokusei','神社属性'],['mbti','性格タイプ'],
  ['aishou','💞 相性診断'],['chat','🔮 相談室']
 ];
 function getTabPrefs(){
@@ -164,7 +164,7 @@ function buildCaptureGuide(me,pt,rel){
     <h3>🤝 お願い事のコツ</h3>
     <p class="desc">${esc(g.ask)}</p>
     <h3>🌙 今の相手の状態</h3>
-    <p class="desc">六星占術で見ると、${nameB}の${rk.nowYear}年は「${ph[0]}」の運気。${esc(PHASE_APPROACH[rk.phaseIdx])}</p>
+    <p class="desc">運命星めぐりで見ると、${nameB}の${rk.nowYear}年は「${ph[0]}」の運気。${esc(PHASE_APPROACH[rk.phaseIdx])}</p>
     <h3>📖 心理学の知恵 ─ ${esc(tech.n)}</h3>
     <p class="desc">${esc(tech.d)}</p>
     <p class="desc" style="color:var(--gold-dim)">今日からできる一歩:${esc(tech.s)}</p>
