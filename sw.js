@@ -1,7 +1,7 @@
 /* 開運コンパス Service Worker
    リリースごとに CACHE_VERSION を手動でバンプすること(例: kaiun-v1 → kaiun-v2)。
    バンプすると activate 時に旧キャッシュが削除され、更新が確実に反映される。 */
-const CACHE_VERSION = 'kaiun-v1';
+const CACHE_VERSION = 'kaiun-v2';
 const CACHE_NAME = CACHE_VERSION;
 
 /* プリキャッシュ対象。JS は index.html の実際の src(クエリ付き)と一致させること。 */
@@ -9,10 +9,14 @@ const PRECACHE_URLS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './uranai-data.js?v=tm1',
-  './uranai-plus.js?v=tm1',
-  './uranai-luna.js?v=tm1',
-  './uranai-main.js?v=tm1',
+  './uranai-data.js?v=d1',
+  './uranai-plus.js?v=d1',
+  './uranai-luna.js?v=d1',
+  './uranai-main.js?v=d1',
+  './uranai-detail-a.js?v=d1',
+  './uranai-detail-b.js?v=d1',
+  './uranai-detail.js?v=d1',
+  './uranai-pwa.js?v=d1',
   './icons/icon-192.png'
 ];
 
